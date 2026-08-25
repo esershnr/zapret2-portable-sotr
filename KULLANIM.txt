@@ -1,0 +1,24 @@
+========================================================
+Zapret 2 - Discord + Web @esershnr SONLINE
+========================================================
+
+SECENEK 1 - MANUEL KULLANIM:
+1. "Baslat.bat" dosyasini calistirin (Yonetici izni onaylayin).
+   - Acilan terminal penceresini kapatmayin (simge durumuna kucultebilirsiniz).
+   - Discord, siteler vb. tum erisimler aktiflesir.
+   - Oyun platformlarina (Ubisoft, Steam, Rockstar vb.) ASLA dokunmaz.
+2. Programi kapatmak istediginizde "Durdur.bat" calistirin.
+
+SECENEK 2 - WINDOWS SERVISI (OTOMATIK BASLATMA):
+1. "Servis_Kur.bat" dosyasina cift tiklayin.
+   - Hicbir CMD penceresi acik kalmaz.
+   - Windows her acildiginda arka planda sessizce ve otomatik calisir.
+2. Servisi kaldirmak istediginizde "Servis_Sil.bat" dosyasini calistirmaniz yeterlidir.
+
+DNS SORUNU COZUCU:
+- Eger yeni bir bilgisayarda Discord "Checking for updates" ekraninda kalirsa:
+  "DNS_Ayarla.cmd" dosyasini 1 kez calistirin. Ag kartina Cloudflare DNS (1.1.1.1 ve IPv6) tanimlar.
+
+LISTELER (files/ klasoru):
+- files\list-discord.txt -> Discord alan adlari
+- files\list-other.txt   -> Diger engelli web siteleri
