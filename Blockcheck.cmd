@@ -21,7 +21,7 @@ echo Bu arac internet saglayicinizda hangi DPI atlatma yonteminin
 echo calistigini test eder ve size ozel Baslat-Kisisel.bat olusturur.
 echo.
 echo  - VPN, GoodbyeDPI, baska zapret kopyalari vb. KAPALI olmali.
-echo  - Test 5-20 dakika surebilir, pencereyi kapatmayin.
+echo  - Test 10-20 dakika surebilir, pencereyi kapatmayin.
 echo  - Ilk calistirmada ~40 MB zapret-win-bundle indirilir.
 echo.
 pause
@@ -78,6 +78,12 @@ set ENABLE_HTTP3=0
 set REPEATS=1
 set PARALLEL=0
 set SCANLEVEL=standard
+rem Kisisel .bat'a hic secilmeyecek stratejileri test etme, sureyi cok kisaltir:
+rem sabit TTL (1-12 arasi tek tek, hat degisince bozulur; autottl testleri kalir)
+set MAX_TTL=0
+rem syndata SYN paketinde calisir, site listesiyle (hostlist) birlikte kullanilamaz
+set NOTEST_SYNDATA_HTTP=1
+set NOTEST_SYNDATA_HTTPS=1
 rem Turkiye'de engelli alan adlari ISS DNS'inde hic cozulmeyebilir, test icin DoH kullan
 set SECURE_DNS=1
 rem DoH sunuculari IP ile: ISS cloudflare-dns.com / dns.google SNI'sini DPI ile kesebiliyor
