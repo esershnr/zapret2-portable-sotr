@@ -75,9 +75,9 @@ set ENABLE_HTTP=1
 set ENABLE_HTTPS_TLS12=1
 set ENABLE_HTTPS_TLS13=0
 set ENABLE_HTTP3=0
-set REPEATS=2
+set REPEATS=1
 set PARALLEL=0
-set SCANLEVEL=quick
+set SCANLEVEL=standard
 rem Turkiye'de engelli alan adlari ISS DNS'inde hic cozulmeyebilir, test icin DoH kullan
 set SECURE_DNS=1
 rem DoH sunuculari IP ile: ISS cloudflare-dns.com / dns.google SNI'sini DPI ile kesebiliyor
