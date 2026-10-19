@@ -55,8 +55,10 @@ foreach ($adapter in $adapters) {
 Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" -Name DoHPolicy -ErrorAction SilentlyContinue
 
 if (Get-Command Set-DnsClientDohServerAddress -ErrorAction SilentlyContinue) {
-    foreach ($ip in @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001", "8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")) {
-        Set-DnsClientDohServerAddress -ServerAddress $ip -AutoUpgrade $false -ErrorAction SilentlyContinue | Out-Null
+    # Windows'un varsayilan DoH sablonlarina geri don
+    foreach ($ip in $ours) {
+        $tpl = if ($ip -like "8.8.*" -or $ip -like "2001:4860:*") { "https://dns.google/dns-query" } else { "https://cloudflare-dns.com/dns-query" }
+        Set-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $tpl -AutoUpgrade $false -ErrorAction SilentlyContinue | Out-Null
     }
 }
 

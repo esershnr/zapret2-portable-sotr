@@ -80,6 +80,8 @@ set PARALLEL=0
 set SCANLEVEL=quick
 rem Turkiye'de engelli alan adlari ISS DNS'inde hic cozulmeyebilir, test icin DoH kullan
 set SECURE_DNS=1
+rem DoH sunuculari IP ile: ISS cloudflare-dns.com / dns.google SNI'sini DPI ile kesebiliyor
+set "DOH_SERVERS=https://1.1.1.1/dns-query https://8.8.8.8/dns-query https://1.0.0.1/dns-query https://8.8.4.4/dns-query"
 set "DNSCHECK_DOM=discord.com pornhub.com"
 
 echo.

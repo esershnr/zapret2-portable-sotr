@@ -3,10 +3,18 @@ param([ValidateSet("cloudflare", "google")][string]$Provider = "cloudflare")
 $ErrorActionPreference = "Continue"
 
 $providers = @{
-    cloudflare = @{ Name = "Cloudflare"; Template = "https://cloudflare-dns.com/dns-query"; Servers = @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001") }
-    google     = @{ Name = "Google";     Template = "https://dns.google/dns-query";         Servers = @("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844") }
+    cloudflare = @{ Name = "Cloudflare"; Servers = @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001") }
+    google     = @{ Name = "Google";     Servers = @("8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844") }
 }
 $p = $providers[$Provider]
+
+# DoH sablonu alan adi yerine IP ile: ISS DPI'i TLS'teki SNI'ya (cloudflare-dns.com, dns.google)
+# bakip baglantiyi kesiyor, IP adresine baglanirken SNI gonderilmez. Iki saglayicinin
+# sertifikasi da IP adresini iceriyor.
+function Get-DohTemplate($ip) {
+    if ($ip.Contains(":")) { return "https://[$ip]/dns-query" }
+    return "https://$ip/dns-query"
+}
 
 # DNS_Sifirla.cmd ile geri donebilmek icin mevcut ayarlari yedekle
 & "$PSScriptRoot\dns_yedek.ps1"
@@ -17,10 +25,11 @@ $dohSupported = [bool](Get-Command Set-DnsClientDohServerAddress -ErrorAction Si
 if ($dohSupported) {
     foreach ($ip in $p.Servers) {
         try {
+            $tpl = Get-DohTemplate $ip
             if (Get-DnsClientDohServerAddress -ServerAddress $ip -ErrorAction SilentlyContinue) {
-                Set-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $p.Template -AllowFallbackToUdp $false -AutoUpgrade $true -ErrorAction Stop | Out-Null
+                Set-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $tpl -AllowFallbackToUdp $false -AutoUpgrade $true -ErrorAction Stop | Out-Null
             } else {
-                Add-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $p.Template -AllowFallbackToUdp $false -AutoUpgrade $true -ErrorAction Stop | Out-Null
+                Add-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $tpl -AllowFallbackToUdp $false -AutoUpgrade $true -ErrorAction Stop | Out-Null
             }
         } catch {
             Write-Host "  -> DoH tanimlanamadi ($ip): $_" -ForegroundColor Red
@@ -90,6 +99,7 @@ for ($try = 1; $try -le 3 -and -not $ok; $try++) {
 if (-not $ok) {
     Write-Host "Sifreli DNS devreye girmemis olabilir. Elle acmak icin:" -ForegroundColor Yellow
     Write-Host "  Ayarlar > Ag ve Internet > Ethernet/Wi-Fi > DNS sunucusu atamasi > Duzenle > Elle > IPv4" -ForegroundColor Yellow
-    Write-Host "  Tercih edilen ve diger DNS icin 'DNS over HTTPS: Acik (otomatik sablon)' secin, kaydedin." -ForegroundColor Yellow
+    Write-Host "  Tercih edilen ve diger DNS icin 'DNS over HTTPS: Acik (elle sablon)' secin," -ForegroundColor Yellow
+    Write-Host "  sablona $(Get-DohTemplate $p.Servers[0]) ve $(Get-DohTemplate $p.Servers[1]) yazin, kaydedin." -ForegroundColor Yellow
     Write-Host "Internetiniz bozulduysa DNS_Sifirla.cmd ile eski ayarlara donun." -ForegroundColor Yellow
 }
