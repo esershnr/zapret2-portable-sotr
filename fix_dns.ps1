@@ -26,6 +26,11 @@ if ($dohSupported) {
             Write-Host "  -> DoH tanimlanamadi ($ip): $_" -ForegroundColor Red
         }
     }
+    # Grup ilkesi "DNS over HTTPS (DoH) ad cozumlemesini yapilandir" = DoH'a izin ver.
+    # Arayuz kayitlarinin yapisi Windows surumune gore degisiyor, ilke ise hepsinde gecerli.
+    $pol = "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient"
+    New-Item -Path $pol -Force | Out-Null
+    New-ItemProperty -Path $pol -Name DoHPolicy -PropertyType DWord -Value 2 -Force | Out-Null
 }
 
 $adapters = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.InterfaceDescription -notmatch 'Hyper-V|Virtual|Loopback|Geri D' }
@@ -45,12 +50,15 @@ foreach ($adapter in $adapters) {
 
     if ($dohSupported) {
         # Ayarlar > Ag > DNS sifrelemesi: "Yalnizca sifreli (DNS over HTTPS)" ile ayni kayit
-        $base = "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\$($adapter.InterfaceGuid)\DohInterfaceSettings"
+        # (eski surumler DohInterfaceSettings, yeniler DohProfileSettings kullaniyor)
+        $iface = "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\$($adapter.InterfaceGuid)"
         try {
-            foreach ($ip in $p.Servers) {
-                $key = if ($ip.Contains(":")) { "$base\Doh6\$ip" } else { "$base\Doh\$ip" }
-                New-Item -Path $key -Force | Out-Null
-                New-ItemProperty -Path $key -Name DohFlags -PropertyType QWord -Value 1 -Force | Out-Null
+            foreach ($sub in @("DohInterfaceSettings", "DohProfileSettings")) {
+                foreach ($ip in $p.Servers) {
+                    $key = if ($ip.Contains(":")) { "$iface\$sub\Doh6\$ip" } else { "$iface\$sub\Doh\$ip" }
+                    New-Item -Path $key -Force | Out-Null
+                    New-ItemProperty -Path $key -Name DohFlags -PropertyType QWord -Value 1 -Force | Out-Null
+                }
             }
             Write-Host "  -> Sifreli DNS (DNS over HTTPS) acildi." -ForegroundColor Green
         } catch {
@@ -80,6 +88,8 @@ for ($try = 1; $try -le 3 -and -not $ok; $try++) {
     }
 }
 if (-not $ok) {
-    Write-Host "Bilgisayari yeniden baslatip tekrar deneyin. Duzelmezse diger DNS_Ayarla dosyasini deneyin" -ForegroundColor Yellow
-    Write-Host "veya internetiniz bozulduysa DNS_Sifirla.cmd ile eski ayarlara donun." -ForegroundColor Yellow
+    Write-Host "Sifreli DNS devreye girmemis olabilir. Elle acmak icin:" -ForegroundColor Yellow
+    Write-Host "  Ayarlar > Ag ve Internet > Ethernet/Wi-Fi > DNS sunucusu atamasi > Duzenle > Elle > IPv4" -ForegroundColor Yellow
+    Write-Host "  Tercih edilen ve diger DNS icin 'DNS over HTTPS: Acik (otomatik sablon)' secin, kaydedin." -ForegroundColor Yellow
+    Write-Host "Internetiniz bozulduysa DNS_Sifirla.cmd ile eski ayarlara donun." -ForegroundColor Yellow
 }

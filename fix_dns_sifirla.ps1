@@ -36,12 +36,20 @@ foreach ($adapter in $adapters) {
     }
 
     # DNS_Ayarla'nin actigi sifreli DNS (DoH) ayarini kaldir
-    $doh = "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\$($adapter.InterfaceGuid)\DohInterfaceSettings"
-    if (Test-Path $doh) {
-        Remove-Item -Path $doh -Recurse -Force -ErrorAction SilentlyContinue
-        Write-Host "  -> Sifreli DNS ayari kaldirildi." -ForegroundColor Green
+    $iface = "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\$($adapter.InterfaceGuid)"
+    $removed = $false
+    foreach ($sub in @("DohInterfaceSettings", "DohProfileSettings")) {
+        foreach ($fam in @("Doh", "Doh6")) {
+            foreach ($k in @(Get-ChildItem "$iface\$sub\$fam" -ErrorAction SilentlyContinue)) {
+                Remove-Item -Path $k.PSPath -Recurse -Force -ErrorAction SilentlyContinue
+                $removed = $true
+            }
+        }
     }
+    if ($removed) { Write-Host "  -> Sifreli DNS ayari kaldirildi." -ForegroundColor Green }
 }
+
+Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" -Name DoHPolicy -ErrorAction SilentlyContinue
 
 if (Get-Command Set-DnsClientDohServerAddress -ErrorAction SilentlyContinue) {
     foreach ($ip in @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001", "8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")) {
