@@ -78,6 +78,9 @@ set ENABLE_HTTP3=0
 set REPEATS=2
 set PARALLEL=0
 set SCANLEVEL=quick
+rem Turkiye'de engelli alan adlari ISS DNS'inde hic cozulmeyebilir, test icin DoH kullan
+set SECURE_DNS=1
+set "DNSCHECK_DOM=discord.com pornhub.com"
 
 echo.
 echo Blockcheck basliyor: %DOMAINS%

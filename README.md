@@ -49,7 +49,8 @@ Hazır ayar Superonline'da test edildi. Farklı bir İSS'de (Türk Telekom, Voda
   - [`DNS_Ayarla.cmd`](DNS_Ayarla.cmd) dosyasını 1 kez çalıştırın.
   - Bu işlem ağ kartınıza **Cloudflare DNS (1.1.1.1 & 1.0.0.1 ve IPv6)** adreslerini tanımlar.
   - Cloudflare yerine Google DNS (8.8.8.8) isterseniz [`DNS_Ayarla_Google.cmd`](DNS_Ayarla_Google.cmd) kullanın.
-- Blockcheck "DNS HIJACK" uyarısı verirse İSS'niz DNS cevaplarını değiştiriyor demektir; önce DNS'i ayarlayın.
+  - Eski DNS ayarlarınıza dönmek için [`DNS_Sifirla.cmd`](DNS_Sifirla.cmd) çalıştırın. DNS_Ayarla ilk çalıştığında mevcut ayarları `dns_yedek.json` dosyasına yedekler; yedek yoksa DNS otomatiğe (DHCP) alınır.
+- Blockcheck "alan adı çözülemedi" veya "DNS HIJACK" derse İSS'niz engelli siteleri DNS'te engelliyor demektir; zapret bunu aşmaz, önce DNS_Ayarla çalıştırın.
 - Başlatma dosyaları Windows'ta varsayılan olarak kapalı olan **TCP timestamp** özelliğini açar (`netsh interface tcp set global timestamps=enabled`). Bazı stratejiler buna ihtiyaç duyar.
 
 ---

@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Continue"
 
+# DNS_Sifirla.cmd ile geri donebilmek icin mevcut ayarlari yedekle
+& "$PSScriptRoot\dns_yedek.ps1"
+
 $adapters = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.InterfaceDescription -notmatch 'Hyper-V|Virtual|Loopback|Geri D' }
 if (-not $adapters) {
     $adapters = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' }

@@ -5,3 +5,6 @@ blockcheck/blockcheck2.log
 # Blockcheck.cmd ile her bilgisayara ozel uretilen dosyalar
 Baslat-Kisisel.bat
 Servis_Kur-Kisisel.bat
+
+# DNS_Ayarla oncesi ayar yedegi (her bilgisayara ozel)
+dns_yedek.json

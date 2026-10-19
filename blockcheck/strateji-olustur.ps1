@@ -17,6 +17,7 @@ if (-not (Test-Path $Log)) { Fail "Log dosyasi bulunamadi: $Log" }
 $lines = Get-Content $Log | ForEach-Object { $_.TrimEnd() }
 
 $dnsSpoofed = [bool]($lines | Where-Object { $_ -match "DNS HIJACK" })
+$noResolve = [bool]($lines | Where-Object { $_ -match "could not resolve host|does not resolve" })
 
 $start = [Array]::IndexOf($lines, "* SUMMARY")
 if ($start -lt 0) { Fail "blockcheck tamamlanmamis (SUMMARY bolumu yok). Log: $Log" }
@@ -31,12 +32,13 @@ for ($i = $start + 1; $i -lt $lines.Count; $i++) {
     $test = $Matches[1]; $dom = $Matches[2]; $val = $Matches[3]
 
     if (-not $tests.ContainsKey($test)) {
-        $tests[$test] = @{ Domains = @{}; NoBypass = @{}; Strategies = [ordered]@{} }
+        $tests[$test] = @{ Domains = @{}; NoBypass = @{}; Aborted = @{}; Strategies = [ordered]@{} }
     }
     $t = $tests[$test]
     $t.Domains[$dom] = $true
 
     if ($val -eq "working without bypass") { $t.NoBypass[$dom] = $true; continue }
+    if ($val -like "test aborted*") { $t.Aborted[$dom] = $true; continue }
     if ($val -notmatch '^winws2 ') { continue }
 
     # "--wf-*" parametreleri blockcheck'e ozel, gercek yapilandirmada kendi filtrelerimiz var
@@ -63,7 +65,8 @@ function Select-Strategy($testNames) {
     foreach ($name in $testNames) {
         if (-not $tests.ContainsKey($name)) { continue }
         $t = $tests[$name]
-        $need = @($t.Domains.Keys | Where-Object { -not $t.NoBypass.ContainsKey($_) })
+        $need = @($t.Domains.Keys | Where-Object { -not $t.NoBypass.ContainsKey($_) -and -not $t.Aborted.ContainsKey($_) })
+        if ($need.Count -eq 0 -and $t.Aborted.Count -gt 0) { return @{ Status = "aborted"; Test = $name } }
         if ($need.Count -eq 0) { return @{ Status = "nobypass"; Test = $name } }
 
         $cands = @($t.Strategies.Values | ForEach-Object {
@@ -86,12 +89,23 @@ Write-Host "HTTP  : $($http.Status) $($http.Args)"
 Write-Host "HTTPS : $($tls.Status) $($tls.Args)"
 Write-Host ""
 
-if ($dnsSpoofed) {
-    Write-Host "UYARI: Saglayiciniz DNS cevaplarini degistiriyor (DNS HIJACK)." -ForegroundColor Yellow
-    Write-Host "       zapret tek basina yetmez, once DNS_Ayarla.cmd veya DNS_Ayarla_Google.cmd calistirin." -ForegroundColor Yellow
+$domainList = @($tests.Values | ForEach-Object { $_.Domains.Keys } | Sort-Object -Unique)
+
+# zapret DNS engelini asmaz: sistem DNS'i alan adini cozemiyorsa once DNS degistirilmeli
+$sysDnsBad = $false
+foreach ($d in $domainList) {
+    try { Resolve-DnsName $d -Type A -DnsOnly -ErrorAction Stop | Out-Null } catch { $sysDnsBad = $true }
+}
+
+if ($dnsSpoofed -or $sysDnsBad) {
+    Write-Host "UYARI: Saglayicinizin DNS'i engelli alan adlarini cozmuyor veya degistiriyor." -ForegroundColor Yellow
+    Write-Host "       zapret DNS engelini asmaz, once DNS_Ayarla.cmd veya DNS_Ayarla_Google.cmd calistirin." -ForegroundColor Yellow
     Write-Host ""
 }
 
+if (($tls.Status -eq "aborted" -or $tls.Status -eq "notrun") -and $noResolve) {
+    Fail "Alan adi cozulemedi, test yapilamadi. Once DNS_Ayarla.cmd calistirip Blockcheck.cmd'yi tekrar deneyin."
+}
 if ($tls.Status -eq "none") {
     Fail "HTTPS icin calisan bir strateji bulunamadi. blockcheck\blockcheck2.log dosyasini paylasin."
 }
@@ -102,7 +116,7 @@ if ($tls.Status -eq "ok" -and -not $tls.Full) {
     Write-Host "UYARI: Hicbir strateji tum alan adlarinda calismadi, en cok alan adini acan secildi." -ForegroundColor Yellow
 }
 
-$domains = ($tests.Values | ForEach-Object { $_.Domains.Keys } | Sort-Object -Unique) -join " "
+$domains = $domainList -join " "
 $stamp = Get-Date -Format "yyyy-MM-dd HH:mm"
 
 # profil listesi: her eleman bir satir dizisi; {DP} ve {Q} sonra .bat turune gore degistirilir
