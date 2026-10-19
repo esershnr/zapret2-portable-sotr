@@ -1,0 +1,7 @@
+# Blockcheck.cmd tarafindan indirilen zapret-win-bundle ve test ciktilari
+blockcheck/bundle/
+blockcheck/blockcheck2.log
+
+# Blockcheck.cmd ile her bilgisayara ozel uretilen dosyalar
+Baslat-Kisisel.bat
+Servis_Kur-Kisisel.bat

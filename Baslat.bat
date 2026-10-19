@@ -7,6 +7,12 @@ if %errorLevel% neq 0 (
     exit /b
 )
 
+rem tcp_ts fooling icin TCP timestamp gerekli, Windows'ta varsayilan kapali
+netsh interface tcp set global timestamps=enabled >nul 2>&1
+
+rem Acik kalan eski kopyayi kapat
+taskkill /F /IM winws2.exe >nul 2>&1
+
 start "Zapret 2 - Discord + Web @esershnr SONLINE" "%~dp0winws2.exe" --wf-l3=ipv4,ipv6 --wf-tcp-out=80,443 ^
   --wf-raw-part=@"%~dp0windivert.filter\windivert_part.discord_media.txt" ^
   --lua-init=@lua/zapret-lib.lua --lua-init=@lua/zapret-antidpi.lua ^

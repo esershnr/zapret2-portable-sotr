@@ -12,6 +12,9 @@ echo zapret2 Windows Servisi Olarak Kuruluyor...
 echo ========================================================
 echo.
 
+rem tcp_ts fooling icin TCP timestamp gerekli, Windows'ta varsayilan kapali
+netsh interface tcp set global timestamps=enabled >nul 2>&1
+
 rem Once acik calisan winws varsa kapatalim
 taskkill /F /IM winws2.exe >nul 2>&1
 "%~dp0killall.exe" -q winws2.exe >nul 2>&1

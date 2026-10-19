@@ -15,9 +15,17 @@ SECENEK 2 - WINDOWS SERVISI (OTOMATIK BASLATMA):
    - Windows her acildiginda arka planda sessizce ve otomatik calisir.
 2. Servisi kaldirmak istediginizde "Servis_Sil.bat" dosyasini calistirmaniz yeterlidir.
 
+SECENEK 3 - BASLAT.BAT CALISMIYORSA (FARKLI ISS):
+1. Calisan zapret, VPN, GoodbyeDPI vb. kapatin.
+2. "Blockcheck.cmd" calistirin. Ilk seferde ~40 MB indirir, 5-20 dk surer.
+   - Defender istisnasi sorarsa E deyin (yoksa dosyalar silinebilir).
+3. Bitince olusan "Baslat-Kisisel.bat" veya "Servis_Kur-Kisisel.bat" kullanin.
+   - Sorun olursa blockcheck\blockcheck2.log dosyasini paylasin.
+
 DNS SORUNU COZUCU:
 - Eger yeni bir bilgisayarda Discord "Checking for updates" ekraninda kalirsa:
   "DNS_Ayarla.cmd" dosyasini 1 kez calistirin. Ag kartina Cloudflare DNS (1.1.1.1 ve IPv6) tanimlar.
+  Google DNS isterseniz: "DNS_Ayarla_Google.cmd"
 
 LISTELER (files/ klasoru):
 - files\list-discord.txt -> Discord alan adlari
