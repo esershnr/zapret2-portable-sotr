@@ -3,6 +3,7 @@ $ErrorActionPreference = "Continue"
 # dns_yedek.json varsa DNS_Ayarla oncesindeki ayarlara doner,
 # yoksa DNS'i otomatik (DHCP / modemin verdigi) yapar.
 $backup = Join-Path $PSScriptRoot "dns_yedek.json"
+$ours = @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001", "8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")
 $saved = $null
 if (Test-Path $backup) {
     $saved = @(Get-Content $backup -Raw | ConvertFrom-Json)
@@ -22,6 +23,8 @@ foreach ($adapter in $adapters) {
     if ($saved) {
         $s = $saved | Where-Object { $_.Guid -eq $adapter.InterfaceGuid } | Select-Object -First 1
         $servers = @("$($s.V4) $($s.V6)" -split '[,\s]+' | Where-Object { $_ })
+        # eski surumlerin yedegi bu scriptlerin kendi adreslerini icerebilir, onlar orijinal degil
+        if (@($servers | Where-Object { $ours -contains $_ }).Count -gt 0) { $servers = @() }
     }
     try {
         if ($servers.Count -gt 0) {
