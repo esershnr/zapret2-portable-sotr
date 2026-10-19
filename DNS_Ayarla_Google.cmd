@@ -8,11 +8,11 @@ goto :eof
 
 :run_admin
 echo ========================================================
-echo Google DNS ve IPv6 DNS Yapilandiriliyor...
+echo Google DNS ve Sifreli DNS Yapilandiriliyor...
 echo ========================================================
 echo.
 
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0fix_dns_google.ps1"
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0fix_dns.ps1" -Provider google
 
 echo.
 echo ========================================================

@@ -47,7 +47,7 @@ Hazır ayar Superonline'da test edildi. Farklı bir İSS'de (Türk Telekom, Voda
 
 - Eğer Discord açılışta *"Checking for updates"* ekranında takılıyorsa veya bağlantı sorunları yaşıyorsanız:
   - [`DNS_Ayarla.cmd`](DNS_Ayarla.cmd) dosyasını 1 kez çalıştırın.
-  - Bu işlem ağ kartınıza **Cloudflare DNS (1.1.1.1 & 1.0.0.1 ve IPv6)** adreslerini tanımlar.
+  - Bu işlem ağ kartınıza **Cloudflare DNS (1.1.1.1 & 1.0.0.1 ve IPv6)** adreslerini tanımlar ve Windows 11'de **şifreli DNS (DNS over HTTPS)** özelliğini açar. Bazı İSS'ler düz DNS sorgularını yolda yakaladığı için sadece DNS adresini değiştirmek yetmeyebilir.
   - Cloudflare yerine Google DNS (8.8.8.8) isterseniz [`DNS_Ayarla_Google.cmd`](DNS_Ayarla_Google.cmd) kullanın.
   - Eski DNS ayarlarınıza dönmek için [`DNS_Sifirla.cmd`](DNS_Sifirla.cmd) çalıştırın. DNS_Ayarla ilk çalıştığında mevcut ayarları `dns_yedek.json` dosyasına yedekler; yedek yoksa DNS otomatiğe (DHCP) alınır.
 - Blockcheck "alan adı çözülemedi" veya "DNS HIJACK" derse İSS'niz engelli siteleri DNS'te engelliyor demektir; zapret bunu aşmaz, önce DNS_Ayarla çalıştırın.

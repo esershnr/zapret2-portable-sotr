@@ -24,7 +24,7 @@ SECENEK 3 - BASLAT.BAT CALISMIYORSA (FARKLI ISS):
 
 DNS SORUNU COZUCU:
 - Eger yeni bir bilgisayarda Discord "Checking for updates" ekraninda kalirsa:
-  "DNS_Ayarla.cmd" dosyasini 1 kez calistirin. Ag kartina Cloudflare DNS (1.1.1.1 ve IPv6) tanimlar.
+  "DNS_Ayarla.cmd" dosyasini 1 kez calistirin. Ag kartina Cloudflare DNS (1.1.1.1 ve IPv6) tanimlar ve sifreli DNS (DoH) acar.
   Google DNS isterseniz: "DNS_Ayarla_Google.cmd"
   Eski DNS ayarlarina donmek icin: "DNS_Sifirla.cmd"
 - Blockcheck "Alan adi cozulemedi" derse once DNS_Ayarla.cmd calistirin, sonra tekrar deneyin.

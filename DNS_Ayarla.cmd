@@ -8,7 +8,7 @@ goto :eof
 
 :run_admin
 echo ========================================================
-echo Cloudflare DNS ve IPv6 DNS Yapilandiriliyor...
+echo Cloudflare DNS ve Sifreli DNS Yapilandiriliyor...
 echo ========================================================
 echo.
 

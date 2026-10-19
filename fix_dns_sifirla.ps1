@@ -34,6 +34,19 @@ foreach ($adapter in $adapters) {
     } catch {
         Write-Host "  -> Hata: $_" -ForegroundColor Red
     }
+
+    # DNS_Ayarla'nin actigi sifreli DNS (DoH) ayarini kaldir
+    $doh = "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\InterfaceSpecificParameters\$($adapter.InterfaceGuid)\DohInterfaceSettings"
+    if (Test-Path $doh) {
+        Remove-Item -Path $doh -Recurse -Force -ErrorAction SilentlyContinue
+        Write-Host "  -> Sifreli DNS ayari kaldirildi." -ForegroundColor Green
+    }
+}
+
+if (Get-Command Set-DnsClientDohServerAddress -ErrorAction SilentlyContinue) {
+    foreach ($ip in @("1.1.1.1", "1.0.0.1", "2606:4700:4700::1111", "2606:4700:4700::1001", "8.8.8.8", "8.8.4.4", "2001:4860:4860::8888", "2001:4860:4860::8844")) {
+        Set-DnsClientDohServerAddress -ServerAddress $ip -AutoUpgrade $false -ErrorAction SilentlyContinue | Out-Null
+    }
 }
 
 if ($saved) {
