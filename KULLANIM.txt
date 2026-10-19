@@ -17,10 +17,10 @@ SECENEK 2 - WINDOWS SERVISI (OTOMATIK BASLATMA):
 
 SECENEK 3 - BASLAT.BAT CALISMIYORSA (FARKLI ISS):
 1. Calisan zapret, VPN, GoodbyeDPI vb. kapatin.
-2. "Blockcheck.cmd" calistirin. Ilk seferde ~40 MB indirir, 5-20 dk surer.
-   - Defender istisnasi sorarsa E deyin (yoksa dosyalar silinebilir).
+2. "Blockcheck.cmd" calistirin, 1 = Hizli test secin [1-3 dk]. Bulamazsa 2 = Tam test [30-60 dk].
+   - Tam testte Defender istisnasi sorarsa E deyin (yoksa dosyalar silinebilir).
 3. Bitince olusan "Baslat-Kisisel.bat" veya "Servis_Kur-Kisisel.bat" kullanin.
-   - Sorun olursa blockcheck\blockcheck2.log dosyasini paylasin.
+   - Sorun olursa blockcheck\hizli-test.log veya blockcheck\blockcheck2.log dosyasini paylasin.
 
 DNS SORUNU COZUCU:
 - Eger yeni bir bilgisayarda Discord "Checking for updates" ekraninda kalirsa:

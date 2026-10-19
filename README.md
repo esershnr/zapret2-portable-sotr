@@ -33,13 +33,13 @@ Discord (ses kanalları ve medya sunucuları dahil) ile engelli web sitelerine k
 ### Seçenek 3: Baslat.bat Sizde Çalışmıyorsa (Blockcheck ile Kişisel Ayar)
 Hazır ayar Superonline'da test edildi. Farklı bir İSS'de (Türk Telekom, Vodafone, Turknet vb.) çalışmazsa:
 1. Çalışan zapret varsa kapatın; VPN, GoodbyeDPI gibi araçları da kapatın.
-2. [`Blockcheck.cmd`](Blockcheck.cmd) dosyasını çalıştırın.
-   - İlk çalıştırmada [zapret-win-bundle](https://github.com/bol-van/zapret-win-bundle) (~40 MB) `blockcheck\bundle` klasörüne indirilir.
-   - Windows Defender zapret dosyalarını silebileceği için klasörü istisnalara eklemeyi önerir.
-   - Test edilecek alan adlarını sorar (varsayılan: `discord.com`). 5-20 dakika sürebilir.
+2. [`Blockcheck.cmd`](Blockcheck.cmd) dosyasını çalıştırın ve test türünü seçin:
+   - **1 = Hızlı test (önerilen, 1-3 dk):** Bilinen ~20 stratejiyi sırayla dener, ilk çalışanda durur. Ek indirme gerekmez.
+   - **2 = Tam blockcheck (30-60 dk):** Hızlı test bir şey bulamazsa. [zapret-win-bundle](https://github.com/bol-van/zapret-win-bundle) (~40 MB) `blockcheck\bundle` klasörüne indirilir; Windows Defender dosyaları silebileceği için klasörü istisnalara eklemeyi önerir.
+   - Test edilecek alan adlarını sorar (varsayılan: `discord.com`).
 3. Test bitince size özel **`Baslat-Kisisel.bat`** ve **`Servis_Kur-Kisisel.bat`** oluşturulur. Artık bunları kullanın.
    - Strateji iki listedeki (`list-discord.txt`, `list-other.txt`) tüm sitelere uygulanır.
-   - Tam test çıktısı: `blockcheck\blockcheck2.log`. Sorun olursa bu dosyayı paylaşın.
+   - Test çıktısı: `blockcheck\hizli-test.log` (hızlı) veya `blockcheck\blockcheck2.log` (tam). Sorun olursa bu dosyayı paylaşın.
 
 ---
 

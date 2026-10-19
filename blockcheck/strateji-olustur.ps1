@@ -39,7 +39,7 @@ for ($i = $start + 1; $i -lt $lines.Count; $i++) {
 
     if ($val -eq "working without bypass") { $t.NoBypass[$dom] = $true; continue }
     if ($val -like "test aborted*") { $t.Aborted[$dom] = $true; continue }
-    if ($val -notmatch '^winws2 ') { continue }
+    if ($val -notmatch '^winws2 ' -or $val -like "* not working") { continue }
 
     # "--wf-*" parametreleri blockcheck'e ozel, gercek yapilandirmada kendi filtrelerimiz var
     $tokens = $val.Substring(7).Split(" ", [StringSplitOptions]::RemoveEmptyEntries) | Where-Object { $_ -notlike "--wf-*" }
@@ -107,7 +107,7 @@ if (($tls.Status -eq "aborted" -or $tls.Status -eq "notrun") -and $noResolve) {
     Fail "Alan adi cozulemedi, test yapilamadi. Once DNS_Ayarla.cmd calistirip Blockcheck.cmd'yi tekrar deneyin."
 }
 if ($tls.Status -eq "none") {
-    Fail "HTTPS icin calisan bir strateji bulunamadi. blockcheck\blockcheck2.log dosyasini paylasin."
+    Fail "HTTPS icin calisan bir strateji bulunamadi."
 }
 if ($tls.Status -ne "ok" -and $http.Status -ne "ok") {
     Fail "Test edilen alan adlarinda DPI engeli tespit edilmedi, kisisel ayar olusturulmadi. Sorun DNS kaynakli olabilir: DNS_Ayarla.cmd calistirin."
